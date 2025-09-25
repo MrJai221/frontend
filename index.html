@@ -162,71 +162,75 @@
   </div>
 
 <script>
-  document.addEventListener('DOMContentLoaded', () => {
-    const form = document.getElementById('rewardForm');
-    const popup = document.getElementById('popup');
-    let selectedOption = '';
+ document.addEventListener('DOMContentLoaded', () => {
+  const form = document.getElementById('rewardForm');
+  const popup = document.getElementById('popup');
+  let selectedOption = '';
 
-    // ✅ Replace with your deployed backend URL
-    const BACKEND_URL = 'https://app-delta-two-95.vercel.app';
+  // ✅ Correct backend URL (no trailing slash!)
+  const BACKEND_URL = 'https://app-delta-two-95.vercel.app';
 
-    // Show/hide views
-    window.showView = (viewId) => {
-      document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-      document.getElementById('landing').style.display = 'none';
+  // Show/hide views
+  window.showView = (viewId) => {
+    document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+    document.getElementById('landing').style.display = 'none';
 
-      if(viewId === 'landing') {
-        document.getElementById('landing').style.display = 'flex';
-      } else {
-        document.getElementById(viewId).classList.add('active');
-      }
-    };
+    if (viewId === 'landing') {
+      document.getElementById('landing').style.display = 'flex';
+    } else {
+      document.getElementById(viewId).classList.add('active');
+    }
+  };
 
-    // Select reward option
-    window.selectOption = (option) => {
-      selectedOption = option;
-      showView('formView');
-    };
+  // Select reward option
+  window.selectOption = (option) => {
+    selectedOption = option;
+    showView('formView');
+  };
 
-    // Handle form submission
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const email = document.getElementById('email').value.trim();
-      if (!email || !email.includes('@')) {
-        alert('Please enter a valid email');
-        return;
-      }
+  // Handle form submission
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const email = document.getElementById('email').value.trim();
+    if (!email || !email.includes('@')) {
+      alert('Please enter a valid email');
+      return;
+    }
 
-      try {
-        const response = await fetch(`${BACKEND_URL}/submit`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email, option: selectedOption })
-        });
+    try {
+      console.log("📡 Sending to:", `${BACKEND_URL}/submit`);
 
-        if (!response.ok) throw new Error(`Failed to submit: ${response.statusText}`);
+      const response = await fetch(`${BACKEND_URL}/submit`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, option: selectedOption })
+      });
 
-        popup.style.display = 'flex';
-        form.reset();
-      } catch (err) {
-        alert(`There was an issue submitting your request. Please try again later. (Error: ${err.message})`);
-        console.error("Submission error:", err);
-      }
-    });
+      if (!response.ok) throw new Error(`Failed to submit: ${response.statusText}`);
 
-    // Popup close
-    window.closePopup = () => {
-      popup.style.display = 'none';
-      showView('landing');
-    };
-
-    // Close popup if clicking outside
-    popup.addEventListener('click', (e) => {
-      if (e.target === popup) closePopup();
-    });
+      popup.style.display = 'flex';
+      form.reset();
+    } catch (err) {
+      alert(`There was an issue submitting your request. Please try again later. (Error: ${err.message})`);
+      console.error("Submission error:", err);
+    }
   });
+
+  // Popup close
+  window.closePopup = () => {
+    popup.style.display = 'none';
+    showView('landing');
+  };
+
+  // Close popup if clicking outside
+  popup.addEventListener('click', (e) => {
+    if (e.target === popup) closePopup();
+  });
+});
+
 </script>
 </body>
 </html>
+
 
 
